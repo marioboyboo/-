@@ -1,1 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Maximum Chaos Fart Machine</title>
 
+<style>
+body{
+background:black;
+color:white;
+font-family:Arial;
+text-align:center;
+overflow:hidden;
+transition:transform 0.2s linear;
+}
+
+button{
+font-size:22px;
+padding:12px 25px;
+margin:10px;
+cursor:pointer;
+}
+
+.fartButton{
+position:absolute;
+font-size:20px;
+padding:8px 15px;
+}
+
+.dvd{
+position:absolute;
+font-size:40px;
+}
+
+.popup{
+position:absolute;
+background:white;
+color:black;
+border:3px solid black;
+width:250px;
+padding:10px;
+font-family:Tahoma;
+}
+
+.title{
+background:#000080;
+color:white;
+padding:4px;
+}
+
+.shake{
+animation:shake 0.15s infinite;
+}
+
+@keyframes shake{
+0%{transform:translate(3px,2px)}
+25%{transform:translate(-3px,-2px)}
+50%{transform:translate(4px,-3px)}
+75%{transform:translate(-4px,3px)}
+100%{transform:translate(2px,-2px)}
+}
+</style>
+</head>
+
+<body>
+
+<h1>💨 Maximum Chaos Fart Machine 💨</h1>
+
+<button onclick="start()">Start</button>
+<button onclick="chaos()">MAXIMUM CHAOS</button>
+
+<script>
+
+let fart
+let volume = 0.05
+let spin = 0
+let chaosMode = false
+
+function start(){
+
+fart = new Audio("fart.mp3")
+fart.loop = true
+fart.volume = volume
+fart.play()
+
+document.body.classList.add("shake")
+
+setInterval(()=>{
+if(volume < 1){
+volume += 0.02
+fart.volume = volume
+}
+},1000)
+
+spawnButtons()
+
+}
+
+function spawnButtons(){
+
+setInterval(()=>{
+
+let btn=document.createElement("button")
+btn.innerText="💨"
+btn.className="fartButton"
+
+btn.style.left=Math.random()*window.innerWidth+"px"
+btn.style.top=Math.random()*window.innerHeight+"px"
+
+btn.onclick=()=>{
+let s=new Audio("fart.mp3")
+s.play()
+}
+
+document.body.appendChild(btn)
+
+if(!chaosMode && document.querySelectorAll(".fartButton").length>20){
+btn.remove()
+}
+
+},700)
+
+}
+
+function chaos(){
+
+chaosMode=true
+dvdFarts()
+windowsErrors()
+spinPage()
+
+}
+
+function dvdFarts(){
+
+for(let i=0;i<5;i++){
+
+let f=document.createElement("div")
+f.innerText="💨"
+f.className="dvd"
+
+let x=100
+let y=100
+let vx=4+Math.random()*3
+let vy=4+Math.random()*3
+
+document.body.appendChild(f)
+
+setInterval(()=>{
+
+x+=vx
+y+=vy
+
+if(x<0||x>window.innerWidth-40)vx*=-1
+if(y<0||y>window.innerHeight-40)vy*=-1
+
+f.style.left=x+"px"
+f.style.top=y+"px"
+
+},20)
+
+}
+
+}
+
+function windowsErrors(){
+
+setInterval(()=>{
+
+let p=document.createElement("div")
+p.className="popup"
+
+p.style.left=Math.random()*window.innerWidth+"px"
+p.style.top=Math.random()*window.innerHeight+"px"
+
+p.innerHTML=`
+<div class="title">Windows</div>
+Too many farts detected.
+<br><br>
+<button onclick="this.parentElement.remove()">OK</button>
+`
+
+document.body.appendChild(p)
+
+},2000)
+
+}
+
+function spinPage(){
+
+setInterval(()=>{
+spin+=2
+document.body.style.transform="rotate("+spin+"deg)"
+},50)
+
+}
+
+</script>
+
+</body>
+</html>
