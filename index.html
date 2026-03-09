@@ -10,7 +10,7 @@ color:white;
 font-family:Arial;
 text-align:center;
 overflow:hidden;
-transition:transform 0.2s linear;
+transition:transform 0.1s linear;
 }
 
 button{
@@ -48,7 +48,7 @@ padding:4px;
 }
 
 .shake{
-animation:shake 0.15s infinite;
+animation:shake 0.12s infinite;
 }
 
 @keyframes shake{
@@ -73,6 +73,7 @@ animation:shake 0.15s infinite;
 let fart
 let volume = 0.05
 let spin = 0
+let spinSpeed = 2
 let chaosMode = false
 
 function start(){
@@ -86,7 +87,7 @@ document.body.classList.add("shake")
 
 setInterval(()=>{
 if(volume < 1){
-volume += 0.02
+volume += chaosMode ? 0.05 : 0.02
 fart.volume = volume
 }
 },1000)
@@ -108,6 +109,7 @@ btn.style.top=Math.random()*window.innerHeight+"px"
 
 btn.onclick=()=>{
 let s=new Audio("fart.mp3")
+s.volume=volume
 s.play()
 }
 
@@ -117,31 +119,33 @@ if(!chaosMode && document.querySelectorAll(".fartButton").length>20){
 btn.remove()
 }
 
-},700)
+},chaosMode ? 200 : 700)
 
 }
 
 function chaos(){
 
 chaosMode=true
+
 dvdFarts()
 windowsErrors()
 spinPage()
+extraFarts()
 
 }
 
 function dvdFarts(){
 
-for(let i=0;i<5;i++){
+for(let i=0;i<10;i++){
 
 let f=document.createElement("div")
 f.innerText="💨"
 f.className="dvd"
 
-let x=100
-let y=100
-let vx=4+Math.random()*3
-let vy=4+Math.random()*3
+let x=Math.random()*window.innerWidth
+let y=Math.random()*window.innerHeight
+let vx=5+Math.random()*5
+let vy=5+Math.random()*5
 
 document.body.appendChild(f)
 
@@ -156,7 +160,7 @@ if(y<0||y>window.innerHeight-40)vy*=-1
 f.style.left=x+"px"
 f.style.top=y+"px"
 
-},20)
+},16)
 
 }
 
@@ -169,8 +173,8 @@ setInterval(()=>{
 let p=document.createElement("div")
 p.className="popup"
 
-p.style.left=Math.random()*window.innerWidth+"px"
-p.style.top=Math.random()*window.innerHeight+"px"
+p.style.left=Math.random()*(window.innerWidth-250)+"px"
+p.style.top=Math.random()*(window.innerHeight-120)+"px"
 
 p.innerHTML=`
 <div class="title">Windows</div>
@@ -181,16 +185,36 @@ Too many farts detected.
 
 document.body.appendChild(p)
 
-},2000)
+},chaosMode ? 800 : 2000)
 
 }
 
 function spinPage(){
 
 setInterval(()=>{
-spin+=2
+
+spin+=spinSpeed
+spinSpeed+=0.05
+
 document.body.style.transform="rotate("+spin+"deg)"
-},50)
+
+},30)
+
+}
+
+function extraFarts(){
+
+setInterval(()=>{
+
+for(let i=0;i<5;i++){
+
+let s=new Audio("fart.mp3")
+s.volume=volume
+s.play()
+
+}
+
+},600)
 
 }
 
