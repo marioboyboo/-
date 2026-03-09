@@ -12,10 +12,6 @@ body{
   overflow:hidden;
 }
 
-h1{
-  margin-top:40px;
-}
-
 button{
   font-size:22px;
   padding:12px 25px;
@@ -51,15 +47,11 @@ button{
 <button onclick="start()">Start Fart</button>
 <button onclick="chaos()">MAXIMUM CHAOS MODE</button>
 
-<audio id="fart" preload="auto"></audio>
+<audio id="fart" src="fart.mp3" loop></audio>
 
 <script>
 
 let fart = document.getElementById("fart")
-
-// direct sound file
-fart.src = "https://www.myinstants.com/media/sounds/fart-meme-sound-better-and-louder.mp3"
-
 let volume = 0.05
 let chaosMode = false
 let started = false
@@ -69,14 +61,11 @@ function start(){
   if(started) return
   started = true
 
-  fart.loop = true
   fart.volume = volume
-
-  fart.play().catch(()=>{})
+  fart.play()
 
   document.body.classList.add("shake")
 
-  // slowly increase volume
   setInterval(()=>{
     if(volume < 1){
       volume += 0.02
@@ -100,7 +89,7 @@ function spawnButtons(){
 
     btn.onclick = ()=>{
       fart.currentTime = 0
-      fart.play().catch(()=>{})
+      fart.play()
     }
 
     document.body.appendChild(btn)
@@ -134,7 +123,7 @@ function chaos(){
 
       btn.onclick=()=>{
         fart.currentTime=0
-        fart.play().catch(()=>{})
+        fart.play()
       }
 
       document.body.appendChild(btn)
