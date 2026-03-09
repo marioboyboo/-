@@ -4,13 +4,17 @@
 <title>Maximum Chaos Fart Machine</title>
 
 <style>
+
 body{
 background:black;
 color:white;
 font-family:Arial;
 text-align:center;
 overflow:hidden;
-transition:transform 0.1s linear;
+}
+
+#world{
+transition:transform 0.05s linear;
 }
 
 button{
@@ -58,23 +62,30 @@ animation:shake 0.12s infinite;
 75%{transform:translate(-4px,3px)}
 100%{transform:translate(2px,-2px)}
 }
+
 </style>
 </head>
 
 <body>
+
+<div id="world">
 
 <h1>💨 Maximum Chaos Fart Machine 💨</h1>
 
 <button onclick="start()">Start</button>
 <button onclick="chaos()">MAXIMUM CHAOS</button>
 
+</div>
+
 <script>
 
 let fart
 let volume = 0.05
-let spin = 0
-let spinSpeed = 2
 let chaosMode = false
+let spin = 0
+let spinSpeed = 1
+
+const world = document.getElementById("world")
 
 function start(){
 
@@ -83,7 +94,7 @@ fart.loop = true
 fart.volume = volume
 fart.play()
 
-document.body.classList.add("shake")
+world.classList.add("shake")
 
 setInterval(()=>{
 if(volume < 1){
@@ -131,6 +142,19 @@ dvdFarts()
 windowsErrors()
 spinPage()
 extraFarts()
+
+}
+
+function spinPage(){
+
+setInterval(()=>{
+
+spin += spinSpeed
+spinSpeed += 0.05
+
+world.style.transform = "rotate("+spin+"deg)"
+
+},30)
 
 }
 
@@ -185,20 +209,7 @@ Too many farts detected.
 
 document.body.appendChild(p)
 
-},chaosMode ? 800 : 2000)
-
-}
-
-function spinPage(){
-
-setInterval(()=>{
-
-spin+=spinSpeed
-spinSpeed+=0.05
-
-document.body.style.transform="rotate("+spin+"deg)"
-
-},30)
+},800)
 
 }
 
