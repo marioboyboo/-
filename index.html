@@ -4,40 +4,66 @@
 <title>Maximum Chaos Fart Machine</title>
 
 <style>
+
 body{
-  background:black;
-  color:white;
-  font-family:Arial;
-  text-align:center;
-  overflow:hidden;
+background:black;
+color:white;
+font-family:Arial;
+text-align:center;
+overflow:hidden;
+transition:transform 0.2s linear;
 }
 
 button{
-  font-size:22px;
-  padding:12px 25px;
-  margin:10px;
-  cursor:pointer;
+font-size:22px;
+padding:12px 25px;
+margin:10px;
+cursor:pointer;
 }
 
 .fartButton{
-  position:absolute;
-  font-size:18px;
-  padding:8px 15px;
+position:absolute;
+font-size:20px;
+padding:8px 15px;
+}
+
+.dvdFart{
+position:absolute;
+font-size:40px;
+pointer-events:none;
 }
 
 .shake{
-  animation:shake 0.15s infinite;
+animation:shake 0.15s infinite;
+}
+
+.popup{
+position:absolute;
+background:white;
+color:black;
+border:3px solid black;
+width:260px;
+padding:10px;
+box-shadow:5px 5px 10px black;
+font-family:Tahoma;
+}
+
+.popupTitle{
+background:#000080;
+color:white;
+padding:5px;
+font-weight:bold;
 }
 
 @keyframes shake{
-  0%{transform:translate(3px,2px)}
-  25%{transform:translate(-3px,-2px)}
-  50%{transform:translate(4px,-3px)}
-  75%{transform:translate(-4px,3px)}
-  100%{transform:translate(2px,-2px)}
+0%{transform:translate(3px,2px)}
+25%{transform:translate(-3px,-2px)}
+50%{transform:translate(4px,-3px)}
+75%{transform:translate(-4px,3px)}
+100%{transform:translate(2px,-2px)}
 }
-</style>
 
+</style>
 </head>
 
 <body>
@@ -47,88 +73,143 @@ button{
 <button onclick="start()">Start Fart</button>
 <button onclick="chaos()">MAXIMUM CHAOS MODE</button>
 
-<audio id="fart" src="fart.mp3" loop></audio>
+<audio id="fart">
+<source src="fart.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 
 let fart = document.getElementById("fart")
 let volume = 0.05
 let chaosMode = false
-let started = false
+let spin = 0
+let started=false
 
 function start(){
 
-  if(started) return
-  started = true
+if(started) return
+started=true
 
-  fart.volume = volume
-  fart.play()
+fart.loop=true
+fart.volume=volume
 
-  document.body.classList.add("shake")
+// Force audio load
+fart.load()
 
-  setInterval(()=>{
-    if(volume < 1){
-      volume += 0.02
-      fart.volume = volume
-    }
-  },1000)
+// Play after user interaction
+fart.play().catch(()=>{})
 
-  spawnButtons()
+document.body.classList.add("shake")
+
+setInterval(()=>{
+if(volume<1){
+volume+=0.02
+fart.volume=volume
+}
+},1000)
+
+spawnButtons()
+
 }
 
 function spawnButtons(){
 
-  setInterval(()=>{
+setInterval(()=>{
 
-    let btn = document.createElement("button")
-    btn.innerText = "💨"
-    btn.className = "fartButton"
+let btn=document.createElement("button")
+btn.innerText="💨"
+btn.className="fartButton"
 
-    btn.style.left = Math.random()*window.innerWidth + "px"
-    btn.style.top = Math.random()*window.innerHeight + "px"
+btn.style.left=Math.random()*window.innerWidth+"px"
+btn.style.top=Math.random()*window.innerHeight+"px"
 
-    btn.onclick = ()=>{
-      fart.currentTime = 0
-      fart.play()
-    }
+btn.onclick=()=>{
+fart.currentTime=0
+fart.play().catch(()=>{})
+}
 
-    document.body.appendChild(btn)
+document.body.appendChild(btn)
 
-    if(!chaosMode && document.querySelectorAll(".fartButton").length > 20){
-      btn.remove()
-    }
+if(!chaosMode && document.querySelectorAll(".fartButton").length>20){
+btn.remove()
+}
 
-  },700)
+},700)
 
 }
 
 function chaos(){
 
-  chaosMode = true
+chaosMode=true
 
-  setInterval(()=>{
-    document.body.style.background =
-      "hsl(" + Math.random()*360 + ",100%,50%)"
-  },150)
+spawnDVDfarts()
+spawnPopups()
+spinPage()
 
-  setInterval(()=>{
-    for(let i=0;i<5;i++){
+}
 
-      let btn = document.createElement("button")
-      btn.innerText="💨"
-      btn.className="fartButton"
+function spawnDVDfarts(){
 
-      btn.style.left=Math.random()*window.innerWidth+"px"
-      btn.style.top=Math.random()*window.innerHeight+"px"
+for(let i=0;i<5;i++){
 
-      btn.onclick=()=>{
-        fart.currentTime=0
-        fart.play()
-      }
+let fartEmoji=document.createElement("div")
+fartEmoji.innerText="💨"
+fartEmoji.className="dvdFart"
 
-      document.body.appendChild(btn)
-    }
-  },200)
+let x=Math.random()*window.innerWidth
+let y=Math.random()*window.innerHeight
+let vx=4+Math.random()*3
+let vy=4+Math.random()*3
+
+document.body.appendChild(fartEmoji)
+
+setInterval(()=>{
+
+x+=vx
+y+=vy
+
+if(x<0 || x>window.innerWidth-40) vx*=-1
+if(y<0 || y>window.innerHeight-40) vy*=-1
+
+fartEmoji.style.left=x+"px"
+fartEmoji.style.top=y+"px"
+
+},20)
+
+}
+
+}
+
+function spawnPopups(){
+
+setInterval(()=>{
+
+let popup=document.createElement("div")
+popup.className="popup"
+
+popup.style.left=Math.random()*(window.innerWidth-260)+"px"
+popup.style.top=Math.random()*(window.innerHeight-120)+"px"
+
+popup.innerHTML=`
+<div class="popupTitle">Windows</div>
+<p>System Error:<br>Too many farts detected.</p>
+<button onclick="this.parentElement.remove()">OK</button>
+`
+
+document.body.appendChild(popup)
+
+},2000)
+
+}
+
+function spinPage(){
+
+setInterval(()=>{
+
+spin+=2
+document.body.style.transform="rotate("+spin+"deg)"
+
+},50)
 
 }
 
