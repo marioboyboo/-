@@ -51,23 +51,32 @@ button{
 <button onclick="start()">Start Fart</button>
 <button onclick="chaos()">MAXIMUM CHAOS MODE</button>
 
-<audio id="fart" loop>
-<source src="https://www.myinstants.com/media/sounds/fart-meme-sound-better-and-louder.mp3" type="audio/mpeg">
-</audio>
+<audio id="fart" preload="auto"></audio>
 
 <script>
 
 let fart = document.getElementById("fart")
+
+// direct sound file
+fart.src = "https://www.myinstants.com/media/sounds/fart-meme-sound-better-and-louder.mp3"
+
 let volume = 0.05
 let chaosMode = false
+let started = false
 
 function start(){
 
+  if(started) return
+  started = true
+
+  fart.loop = true
   fart.volume = volume
-  fart.play()
+
+  fart.play().catch(()=>{})
 
   document.body.classList.add("shake")
 
+  // slowly increase volume
   setInterval(()=>{
     if(volume < 1){
       volume += 0.02
@@ -91,13 +100,13 @@ function spawnButtons(){
 
     btn.onclick = ()=>{
       fart.currentTime = 0
-      fart.play()
+      fart.play().catch(()=>{})
     }
 
     document.body.appendChild(btn)
 
     if(!chaosMode && document.querySelectorAll(".fartButton").length > 20){
-      document.body.removeChild(btn)
+      btn.remove()
     }
 
   },700)
@@ -108,19 +117,14 @@ function chaos(){
 
   chaosMode = true
 
-  document.body.style.background =
-    "hsl(" + Math.random()*360 + ",100%,50%)"
-
   setInterval(()=>{
-
     document.body.style.background =
       "hsl(" + Math.random()*360 + ",100%,50%)"
-
   },150)
 
   setInterval(()=>{
-
     for(let i=0;i<5;i++){
+
       let btn = document.createElement("button")
       btn.innerText="💨"
       btn.className="fartButton"
@@ -130,12 +134,11 @@ function chaos(){
 
       btn.onclick=()=>{
         fart.currentTime=0
-        fart.play()
+        fart.play().catch(()=>{})
       }
 
       document.body.appendChild(btn)
     }
-
   },200)
 
 }
