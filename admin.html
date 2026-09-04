@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spinner Controller (Override)</title>
+  <script src="https://cdn.scaledrone.com/scaledrone.min.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 400px; background: #1a1a1a; color: #fff; }
+    select, button { width: 100%; padding: 12px; margin-top: 10px; font-size: 1rem; border-radius: 6px; border: none; }
+    select { background: #333; color: #fff; }
+    button { background: #e63946; color: white; font-weight: bold; cursor: pointer; }
+    .status { font-size: 0.85rem; color: #aaa; margin-bottom: 15px; }
+  </style>
+</head>
+<body>
+  <h2>Spinner Outcome Control</h2>
+  <div class="status" id="status">Connecting to wheel...</div>
+
+  <label for="forceWinner">Next Forced Winner:</label>
+  <select id="forceWinner" onchange="sendOverride()">
+    <option value="">-- Fair / Random (No Rig) --</option>
+  </select>
+
+  <button onclick="triggerRemoteSpin()">TRIGGER SPIN FROM HERE</button>
+
+  <script>
+    const drone = new Scaledrone('RVMkQYQI2jHh2S2q');
+    let room;
+
+    drone.on('open', error => {
+      if (error) return console.error(error);
+      document.getElementById('status').textContent = 'Connected to Wheel';
+      room = drone.subscribe('observable-spinner');
+
+      // Request the current names list from the main spinner page upon connection
+      drone.publish({
+        room: 'observable-spinner',
+        message: { type: 'REQUEST_NAMES' }
+      });
+
+      room.on('data', message => {
+        if (message.type === 'SYNC_NAMES') {
+          updateDropdown(message.names);
+        }
+      });
+    });
+
+    function updateDropdown(names) {
+      const select = document.getElementById('forceWinner');
+      const currentValue = select.value;
+      select.innerHTML = '<option value="">-- Fair / Random (No Rig) --</option>';
+      
+      names.forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        select.appendChild(opt);
+      });
+      select.value = currentValue;
+    }
+
+    function sendOverride() {
+      const forcedWinner = document.getElementById('forceWinner').value;
+      drone.publish({
+        room: 'observable-spinner',
+        message: { type: 'SET_OVERRIDE', forcedWinner: forcedWinner || null }
+      });
+    }
+
+    function triggerRemoteSpin() {
+      drone.publish({
+        room: 'observable-spinner',
+        message: { type: 'TRIGGER_SPIN' }
+      });
+    }
+  </script>
+</body>
+</html>
